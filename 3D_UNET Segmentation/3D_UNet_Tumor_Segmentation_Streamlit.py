@@ -99,6 +99,11 @@ axes[0, 0].imshow(img_sl, cmap='gray')
 axes[0, 0].set_title('MRI')
 axes[0, 0].axis('off')
 
+# Top-right: MRI
+axes[0, 1].imshow(img_sl, cmap='gray')
+axes[0, 1].set_title('MRI')
+axes[0, 1].axis('off')
+
 axes[1, 0].imshow(img_sl, cmap='gray')
 axes[1, 0].imshow(pred_sl, cmap='jet', alpha=0.5)
 axes[1, 0].set_title('Prediction')
