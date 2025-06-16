@@ -52,7 +52,7 @@ cases = sorted(cases)
 st.title('Interactive Brain Tumor Segmentation Viewer')
 
 # Cache loading of all volumes into memory
-@st.cache(allow_output_mutation=True)
+@st.cache_resource(allow_output_mutation=True)
 def load_all_volumes(input_dir, pred_dir, gt_dir):
     cases = [f.replace('_T1.nii.gz', '') for f in os.listdir(input_dir) if f.endswith('_T1.nii.gz')]
     cases = sorted(cases)
