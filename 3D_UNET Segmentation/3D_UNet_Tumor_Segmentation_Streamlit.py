@@ -91,28 +91,28 @@ fig, axes = plt.subplots(2,2, figsize=(10,10))
 
 
 # Top-left: MRI
-axes[0, 0].imshow(img_sl, cmap='gray')
+axes[0, 0].imshow(img_sl, cmap='gray', origin='lower')
 axes[0, 0].imshow(gt_sl, cmap='jet', alpha=0.5)
 axes[0, 0].set_title('Ground Truth')
 axes[0, 0].axis('off')
 
 # Top-right: MRI + Prediction
-axes[0, 1].imshow(img_sl, cmap='gray')
+axes[0, 1].imshow(img_sl, cmap='gray', origin='lower')
 axes[0, 1].imshow(pred_sl, cmap='jet', alpha=0.5)
 axes[0, 1].set_title('Prediction')
 axes[0, 1].axis('off')
 
 # Bottom-left: MRI + Ground Truth
-axes[1, 0].imshow(img_sl, cmap='gray')
+axes[1, 0].imshow(img_sl, cmap='gray', origin='lower')
 axes[1, 0].set_title('MRI')
 axes[1, 0].axis('off')
 
 # Bottom-right: Combined Overlay (Prediction vs Ground Truth)
 diff = np.zeros_like(img_sl)
 diff[(pred_sl > 0) & (gt_sl == 0)] = 1  # false positives
-axes[1, 1].imshow(img_sl, cmap='gray')
-axes[1, 1].imshow(pred_sl, cmap='Reds', alpha=0.5)
-axes[1, 1].imshow(gt_sl, cmap='Blues', alpha=0.5)
+axes[1, 1].imshow(img_sl, cmap='gray', origin='lower')
+axes[1, 1].imshow(pred_sl, cmap='Reds', alpha=0.5, origin='lower')
+axes[1, 1].imshow(gt_sl, cmap='Blues', alpha=0.5, origin='lower')
 axes[1, 1].set_title('Pred (red) vs GT (blue)')
 axes[1, 1].axis('off')
 
