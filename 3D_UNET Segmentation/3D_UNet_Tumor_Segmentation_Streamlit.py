@@ -7,6 +7,9 @@ import SimpleITK as sitk
 import matplotlib.pyplot as plt
 import streamlit as st
 
+import warnings
+warnings.filterwarnings('ignore')
+
 
 #Clone to local data repo on streamlit cloud
 

@@ -3,6 +3,9 @@ import SimpleITK as sitk
 from glob import glob
 import numpy as np
 
+import warnings
+warnings.filterwarnings('ignore')
+
 
 
 def Split4DNIFTY(inDir:str, outDir:str):
