@@ -1,6 +1,6 @@
 import os
 
-from IPython.core.pylabtools import figsize
+#from IPython.core.pylabtools import figsize
 from git import Repo
 import numpy as np
 import SimpleITK as sitk
@@ -46,7 +46,7 @@ cases = sorted(cases)
 st.title('Interactive Brain Tumor Segmentation Viewer')
 
 # Cache loading of all volumes into memory
-@st.cache_data
+@st.cache(allow_output_mutation=True)
 def load_all_volumes(input_dir, pred_dir, gt_dir):
     cases = [f.replace('_T1.nii.gz', '') for f in os.listdir(input_dir) if f.endswith('_T1.nii.gz')]
     cases = sorted(cases)
@@ -87,7 +87,7 @@ pred_sl = get_slice(pred_vols[selected_case], plane, slice_idx)
 gt_sl   = get_slice(gt_vols[selected_case], plane, slice_idx)
 
 # Plot 2x2 views
-fig, axes = plt.subplot(2,2, figsize(10,10))
+fig, axes = plt.subplot(2,2, figsize=(10,10))
 
 
 # Top-left: MRI
