@@ -4,6 +4,33 @@ import SimpleITK as sitk
 import matplotlib.pyplot as plt
 import streamlit as st
 
+
+#Clone to local data repo on streamlit cloud
+
+REPO_URL    = "https://github.com/daniel-chervin/DS18_FinalProject/tree/main/3D_UNET%20Segmentation/inference_test"
+CLONE_DIR   = "repo_clone"      # temporary local clone
+DATA_SUBDIR = "data"            # the folder inside your repo with the data
+
+@st.cache_resource(show_spinner=False)
+def init_data_folder():
+    """Clone the repo once per session and return the full path to the data folder."""
+    if not os.path.isdir(CLONE_DIR):
+        # Shallow clone just the tip of the default branch
+        Repo.clone_from(REPO_URL, CLONE_DIR, multi_options=["--depth=1"])
+    data_path = os.path.join(CLONE_DIR, DATA_SUBDIR)
+    if not os.path.isdir(data_path):
+        raise FileNotFoundError(f"Expected data folder at {data_path}")
+    return data_path
+
+# trigger clone (or pull) once
+data_path = init_data_folder()
+st.write(f"🔍 Loaded data from `{data_path}`")
+
+# Example: list your files
+for fname in sorted(os.listdir(data_path)):
+    st.write("- ", fname)
+
+
 # Directories
 INPUT_DIR = '/content/data/T1_tumor_eval_resampled/'
 PRED_DIR  = '/content/drive/MyDrive/00-DataScience_BIU/Final Project/3D_UNet_Segmentation/'
