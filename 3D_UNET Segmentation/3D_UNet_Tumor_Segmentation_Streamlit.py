@@ -1,4 +1,5 @@
 import os
+from git import Repo
 import numpy as np
 import SimpleITK as sitk
 import matplotlib.pyplot as plt
