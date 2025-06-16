@@ -186,3 +186,18 @@ def compute_segmentation_metrics(pred: np.ndarray,
         "HD95": hd95,
         "ASSD": assd
     }
+
+
+def call_compute_segmentation_metrics():
+
+    base_dir = r'D:\pyProjects\DS18\DS18_FinalProject1\3D_UNET Segmentation\inference_test'
+    gt_vol = sitk.ReadImage(os.path.join(base_dir, r'BRATS_463.nii.gz'))
+    pred_vol = sitk.ReadImage(os.path.join(base_dir, r'BRATS_463_predict_seg.nii.gz'))
+
+    gt_np = sitk.GetArrayFromImage(gt_vol)
+    pred_np = sitk.GetArrayFromImage(pred_vol)
+
+    stats = compute_segmentation_metrics(pred_np, gt_np)
+    print(stats)
+
+#call_compute_segmentation_metrics()

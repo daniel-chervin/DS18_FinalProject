@@ -146,4 +146,5 @@ st.pyplot(fig)
 # Compute and display metrics
 metrics = compute_segmentation_metrics(pred_vols[selected_case], gt_vols[selected_case])
 st.subheader("Segmentation Metrics (Whole Volume)")
+print(metrics)
 st.table(metrics)
