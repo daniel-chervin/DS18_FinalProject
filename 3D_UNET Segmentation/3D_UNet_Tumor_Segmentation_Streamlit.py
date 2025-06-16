@@ -13,6 +13,9 @@ warnings.filterwarnings('ignore')
 # Hide Streamlit pyplot global use deprecation warning
 #st.set_option('deprecation.showPyplotGlobalUse', False)
 
+# Suppress Streamlit deprecation warnings by raising the logger level
+st.set_option('logger.level', 'error')
+
 
 #Clone to local data repo on streamlit cloud
 
