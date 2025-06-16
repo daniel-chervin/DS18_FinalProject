@@ -6,8 +6,6 @@ import numpy as np
 import warnings
 warnings.filterwarnings('ignore')
 
-
-
 def Split4DNIFTY(inDir:str, outDir:str):
 
     for modality in modalities:
@@ -98,4 +96,4 @@ def call_resample():
             sitk.WriteImage(resampled_img, output_path)
             print(f"✅ Resampled {filename} to {target_size}")
 
-call_resample()
+#call_resample()
