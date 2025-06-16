@@ -95,19 +95,19 @@ gt_sl   = (gt_vols[selected_case][slice_idx, :, :] if plane == 'axial'
 
 # Plot three views
 fig, axes = plt.subplots(2, 2, figsize=(6, 12))
-axes[0].imshow(img_sl, cmap='gray')
-axes[0].set_title('MRI')
-axes[0].axis('off')
+axes[0, 0].imshow(img_sl, cmap='gray')
+axes[0, 0].set_title('MRI')
+axes[0, 0].axis('off')
 
-axes[1].imshow(img_sl, cmap='gray')
-axes[1].imshow(pred_sl, cmap='jet', alpha=0.5)
-axes[1].set_title('Prediction')
-axes[1].axis('off')
+axes[1, 0].imshow(img_sl, cmap='gray')
+axes[1, 0].imshow(pred_sl, cmap='jet', alpha=0.5)
+axes[1, 0].set_title('Prediction')
+axes[1, 0].axis('off')
 
-axes[2].imshow(img_sl, cmap='gray')
-axes[2].imshow(gt_sl, cmap='jet', alpha=0.5)
-axes[2].set_title('Ground Truth')
-axes[2].axis('off')
+axes[1, 1].imshow(img_sl, cmap='gray')
+axes[1, 1].imshow(gt_sl, cmap='jet', alpha=0.5)
+axes[1, 1].set_title('Ground Truth')
+axes[1, 1].axis('off')
 
 plt.tight_layout()
 
