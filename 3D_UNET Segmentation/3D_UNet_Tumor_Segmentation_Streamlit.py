@@ -27,15 +27,15 @@ def init_data_folder():
 data_path = init_data_folder()
 st.write(f"🔍 Loaded data from `{data_path}`")
 
-# Example: list your files
-for fname in sorted(os.listdir(data_path)):
-    st.write("- ", fname)
+# test: list your files
+#for fname in sorted(os.listdir(data_path)):
+#    st.write("- ", fname)
 
 
 # Directories
-INPUT_DIR = '/content/data/T1_tumor_eval_resampled/'
-PRED_DIR  = '/content/drive/MyDrive/00-DataScience_BIU/Final Project/3D_UNet_Segmentation/'
-GT_DIR    = '/content/data/T1_labels_resampled/'  # update if needed
+INPUT_DIR = data_path # '/content/data/T1_tumor_eval_resampled/'
+PRED_DIR  = data_path # '/content/drive/MyDrive/00-DataScience_BIU/Final Project/3D_UNet_Segmentation/'
+GT_DIR    = data_path # '/content/data/T1_labels_resampled/'  # update if needed
 
 # Collect case basenames
 cases = [f.replace('_T1.nii.gz', '') for f in os.listdir(INPUT_DIR) if f.endswith('_T1.nii.gz')]
