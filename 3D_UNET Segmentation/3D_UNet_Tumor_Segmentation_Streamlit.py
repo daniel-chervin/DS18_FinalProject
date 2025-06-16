@@ -7,8 +7,8 @@ import SimpleITK as sitk
 import matplotlib.pyplot as plt
 import streamlit as st
 
-import HelperFunctions
-from HelperFunctions import compute_segmentation_metrics
+
+from DS18_FinalProject1.HelperFunctions import compute_segmentation_metrics
 
 import warnings
 warnings.filterwarnings('ignore')
