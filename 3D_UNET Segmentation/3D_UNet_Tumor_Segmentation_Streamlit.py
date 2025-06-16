@@ -118,4 +118,4 @@ axes[1, 1].axis('off')
 
 plt.tight_layout()
 
-st.pyplot(fig)(fig)
+st.pyplot(fig)
