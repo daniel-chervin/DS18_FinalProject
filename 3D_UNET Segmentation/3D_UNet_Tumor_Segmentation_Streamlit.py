@@ -10,6 +10,9 @@ import streamlit as st
 import warnings
 warnings.filterwarnings('ignore')
 
+# Hide Streamlit pyplot global use deprecation warning
+st.set_option('deprecation.showPyplotGlobalUse', False)
+
 
 #Clone to local data repo on streamlit cloud
 
