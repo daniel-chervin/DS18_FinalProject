@@ -1,4 +1,6 @@
 import os
+
+from IPython.core.pylabtools import figsize
 from git import Repo
 import numpy as np
 import SimpleITK as sitk
@@ -93,7 +95,10 @@ gt_sl   = (gt_vols[selected_case][slice_idx, :, :] if plane == 'axial'
            else gt_vols[selected_case][:, :, slice_idx] if plane == 'sagittal'
            else gt_vols[selected_case][:, slice_idx, :])
 
-# Plot 4 views
+# Plot 2x2 views
+fig, axes = plt.subplot(2,2, figsize(10,10))
+
+
 # Top-left: MRI
 axes[0, 0].imshow(img_sl, cmap='gray')
 axes[0, 0].set_title('MRI')
