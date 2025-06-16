@@ -7,6 +7,9 @@ import SimpleITK as sitk
 import matplotlib.pyplot as plt
 import streamlit as st
 
+import HelperFunctions
+from HelperFunctions import compute_segmentation_metrics
+
 import warnings
 warnings.filterwarnings('ignore')
 
@@ -139,3 +142,8 @@ axes[1, 1].axis('off')
 plt.tight_layout()
 
 st.pyplot(fig)
+
+# Compute and display metrics
+metrics = compute_segmentation_metrics(pred_vols[selected_case], gt_vols[selected_case])
+st.subheader("Segmentation Metrics (Whole Volume)")
+st.table(metrics)
