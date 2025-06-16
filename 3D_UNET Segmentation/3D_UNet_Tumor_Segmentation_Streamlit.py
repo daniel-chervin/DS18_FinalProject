@@ -30,8 +30,8 @@ data_path = init_data_folder()
 st.write(f"🔍 Loaded data from `{data_path}`")
 
 # test: list your files
-for fname in sorted(os.listdir(data_path)):
-    st.write("- ", fname)
+#for fname in sorted(os.listdir(data_path)):
+#    st.write("- ", fname)
 
 
 # Directories
@@ -87,7 +87,7 @@ pred_sl = get_slice(pred_vols[selected_case], plane, slice_idx)
 gt_sl   = get_slice(gt_vols[selected_case], plane, slice_idx)
 
 # Plot 2x2 views
-fig, axes = plt.subplot(2,2, figsize=(10,10))
+fig, axes = plt.subplots(2,2, figsize=(10,10))
 
 
 # Top-left: MRI
