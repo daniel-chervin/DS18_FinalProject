@@ -8,9 +8,9 @@ import streamlit as st
 
 #Clone to local data repo on streamlit cloud
 
-REPO_URL    = "https://github.com/daniel-chervin/DS18_FinalProject/tree/main/3D_UNET%20Segmentation/inference_test"
+REPO_URL    = "https://github.com/daniel-chervin/DS18_FinalProject.git"
 CLONE_DIR   = "repo_clone"      # temporary local clone
-DATA_SUBDIR = "data"            # the folder inside your repo with the data
+DATA_SUBDIR = os.path.join("3D_UNET Segmentation", "inference_test")            # the folder inside your repo with the data
 
 @st.cache_resource(show_spinner=False)
 def init_data_folder():
