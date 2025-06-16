@@ -30,8 +30,8 @@ data_path = init_data_folder()
 st.write(f"🔍 Loaded data from `{data_path}`")
 
 # test: list your files
-#for fname in sorted(os.listdir(data_path)):
-#    st.write("- ", fname)
+for fname in sorted(os.listdir(data_path)):
+    st.write("- ", fname)
 
 
 # Directories
@@ -50,23 +50,13 @@ st.title('Interactive Brain Tumor Segmentation Viewer')
 def load_all_volumes(input_dir, pred_dir, gt_dir):
     cases = [f.replace('_T1.nii.gz', '') for f in os.listdir(input_dir) if f.endswith('_T1.nii.gz')]
     cases = sorted(cases)
-    mri_dict = {}
-    pred_dict = {}
-    gt_dict = {}
+    mri_dict, pred_dict, gt_dict = {}, {}, {}
     for case in cases:
-        # Load once and store arrays of shape [Z, Y, X]
-        img_path  = os.path.join(input_dir, f"{case}_T1.nii.gz")
-        pred_path = os.path.join(pred_dir,  f"{case}_predict_seg.nii.gz")
-        gt_path   = os.path.join(gt_dir,    f"{case}.nii.gz")
-        mri = sitk.ReadImage(img_path)
-        pred = sitk.ReadImage(pred_path)
-        gt = sitk.ReadImage(gt_path)
-        mri_dict[case]  = sitk.GetArrayFromImage(mri)
-        pred_dict[case] = sitk.GetArrayFromImage(pred)
-        gt_dict[case]   = sitk.GetArrayFromImage(gt)
+        mri_dict[case] = sitk.GetArrayFromImage(sitk.ReadImage(os.path.join(input_dir, f"{case}_T1.nii.gz")))
+        pred_dict[case] = sitk.GetArrayFromImage(sitk.ReadImage(os.path.join(pred_dir,  f"{case}_predict_seg.nii.gz")))
+        gt_dict[case]   = sitk.GetArrayFromImage(sitk.ReadImage(os.path.join(gt_dir,    f"{case}.nii.gz")))
     return cases, mri_dict, pred_dict, gt_dict
 
-# Load all volumes once
 cases, mri_vols, pred_vols, gt_vols = load_all_volumes(INPUT_DIR, PRED_DIR, GT_DIR)
 
 # Sidebar controls
@@ -74,26 +64,27 @@ st.sidebar.header('Controls')
 selected_case = st.sidebar.selectbox('Case', cases)
 plane = st.sidebar.selectbox('Plane', ['axial', 'sagittal', 'coronal'])
 
-# Determine slice range based on plane
-vol_shape = mri_vols[selected_case].shape
+# Determine slice range
+shape = mri_vols[selected_case].shape
 if plane == 'axial':
-    max_idx = vol_shape[0]
+    max_idx = shape[0]
 elif plane == 'sagittal':
-    max_idx = vol_shape[2]
-else:  # coronal
-    max_idx = vol_shape[1]
-slice_idx = st.sidebar.slider('Slice', 0, max_idx - 1, max_idx // 2)
+    max_idx = shape[2]
+else:
+    max_idx = shape[1]
+slice_idx = st.sidebar.slider('Slice', 0, max_idx-1, max_idx//2)
 
-# Extract selected slices
-img_sl  = (mri_vols[selected_case][slice_idx, :, :] if plane == 'axial'
-           else mri_vols[selected_case][:, :, slice_idx] if plane == 'sagittal'
-           else mri_vols[selected_case][:, slice_idx, :])
-pred_sl = (pred_vols[selected_case][slice_idx, :, :] if plane == 'axial'
-           else pred_vols[selected_case][:, :, slice_idx] if plane == 'sagittal'
-           else pred_vols[selected_case][:, slice_idx, :])
-gt_sl   = (gt_vols[selected_case][slice_idx, :, :] if plane == 'axial'
-           else gt_vols[selected_case][:, :, slice_idx] if plane == 'sagittal'
-           else gt_vols[selected_case][:, slice_idx, :])
+# Extract the slice based on selected plane
+def get_slice(vol, plane, idx):
+    if plane == 'axial':
+        return vol[idx, :, :]
+    if plane == 'sagittal':
+        return vol[:, :, idx]
+    return vol[:, idx, :]
+
+img_sl  = get_slice(mri_vols[selected_case], plane, slice_idx)
+pred_sl = get_slice(pred_vols[selected_case], plane, slice_idx)
+gt_sl   = get_slice(gt_vols[selected_case], plane, slice_idx)
 
 # Plot 2x2 views
 fig, axes = plt.subplot(2,2, figsize(10,10))
