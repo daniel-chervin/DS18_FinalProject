@@ -9,7 +9,7 @@ import streamlit as st
 from scipy.ndimage import distance_transform_edt, binary_erosion, generate_binary_structure
 
 
-#from DS18_FinalProject1.HelperFunctions import compute_segmentation_metrics
+from HelperFunctions import compute_segmentation_metrics
 
 import warnings
 warnings.filterwarnings('ignore')
@@ -45,7 +45,7 @@ st.write(f"🔍 Loaded data from `{data_path}`")
 # test: list your files
 #for fname in sorted(os.listdir(data_path)):
 #    st.write("- ", fname)
-
+'''
 def compute_segmentation_metrics(pred: np.ndarray,
                                  gt: np.ndarray,
                                  spacing=(1.0, 1.0, 1.0)) -> dict:
@@ -128,7 +128,7 @@ def compute_segmentation_metrics(pred: np.ndarray,
         "HD95": hd95,
         "ASSD": assd
     }
-
+'''
 
 # Directories
 INPUT_DIR = data_path # '/content/data/T1_tumor_eval_resampled/'
