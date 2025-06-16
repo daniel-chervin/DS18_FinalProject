@@ -89,6 +89,12 @@ gt_sl   = get_slice(gt_vols[selected_case], plane, slice_idx)
 # Plot 2x2 views
 fig, axes = plt.subplots(2,2, figsize=(10,10))
 
+# Helper to plot with equal aspect ratio
+def plot_img(ax, base_img, overlay=None, cmap='gray', overlay_cmap='jet'):
+    im = ax.imshow(base_img, cmap=cmap, origin='lower', aspect='equal')
+    if overlay is not None:
+        ax.imshow(overlay, cmap=overlay_cmap, alpha=0.5, origin='lower', aspect='equal')
+
 
 # Top-left: MRI
 axes[0, 0].imshow(img_sl, cmap='gray', origin='lower')
