@@ -3,3 +3,4 @@ streamlit
 SimpleITK
 matplotlib
 gitpython
+scipy

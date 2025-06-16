@@ -94,7 +94,7 @@ gt_sl   = (gt_vols[selected_case][slice_idx, :, :] if plane == 'axial'
            else gt_vols[selected_case][:, slice_idx, :])
 
 # Plot three views
-fig, axes = plt.subplots(3, 1, figsize=(6, 12))
+fig, axes = plt.subplots(2, 2, figsize=(6, 12))
 axes[0].imshow(img_sl, cmap='gray')
 axes[0].set_title('MRI')
 axes[0].axis('off')
