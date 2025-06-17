@@ -211,7 +211,10 @@ import openai
 # 2) Set your API key in the environment:
 #    export OPENAI_API_KEY="sk-…"
 
-openai.api_key = os.environ["OPENAI_API_KEY"]
+# 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
+
+#openai.api_key = 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
+client = openai.OpenAI(api_key="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")
 
 def analyze_metrics_with_gpt(metrics: dict, model="gpt-4o-mini") -> str:
     """
@@ -237,16 +240,25 @@ def analyze_metrics_with_gpt(metrics: dict, model="gpt-4o-mini") -> str:
         }
     ]
 
+    response = client.chat.completions.create(
+        model=model,
+        messages=messages,
+        temperature=0.3,
+        max_tokens=300,
+    )
+
+    '''
     resp = openai.ChatCompletion.create(
         model=model,
         messages=messages,
         temperature=0.3,
         max_tokens=300,
     )
-    return resp.choices[0].message.content.strip()
+    '''
+    return response.choices[0].message.content.strip()
 
-
-'''if __name__ == "__main__":
+'''
+if __name__ == "__main__":
     metrics = {
         "Dice": 0.9388,
         "Jaccard": 0.8847,

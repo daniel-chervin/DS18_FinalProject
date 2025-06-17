@@ -4,3 +4,4 @@ SimpleITK
 matplotlib
 gitpython
 scipy
+openai
