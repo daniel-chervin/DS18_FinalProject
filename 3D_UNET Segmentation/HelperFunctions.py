@@ -213,7 +213,7 @@ import openai
 
 
 #openai.api_key =
-client = openai.OpenAI(api_key="")
+#client = openai.OpenAI(api_key="")
 
 def analyze_metrics_with_gpt(metrics: dict, model="gpt-4o-mini") -> str:
     """
