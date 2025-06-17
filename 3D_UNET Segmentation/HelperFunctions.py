@@ -213,9 +213,9 @@ import openai
 
 
 #openai.api_key =
-#client = openai.OpenAI(api_key="")
+#
 
-def analyze_metrics_with_gpt(metrics: dict, model="gpt-4o-mini") -> str:
+def analyze_metrics_with_gpt(key: str, metrics: dict, model="gpt-4o-mini") -> str:
     """
     Send the metrics dict to ChatGPT and return its analysis.
     """
@@ -227,6 +227,7 @@ def analyze_metrics_with_gpt(metrics: dict, model="gpt-4o-mini") -> str:
                 "You are a radiology/ML expert. "
                 "When given segmentation metrics, you provide a concise, "
                 "clear evaluation of strengths, weaknesses, and suggested next steps."
+
             )
         },
         {
@@ -235,10 +236,11 @@ def analyze_metrics_with_gpt(metrics: dict, model="gpt-4o-mini") -> str:
                 "Here are my segmentation results:\n\n"
                 f"{metrics}\n\n"
                 "Please interpret these numbers and suggest improvements."
+                "organize the response in a presentable manner."
             )
         }
     ]
-
+    client = openai.OpenAI(api_key=key)
     response = client.chat.completions.create(
         model=model,
         messages=messages,
@@ -246,14 +248,6 @@ def analyze_metrics_with_gpt(metrics: dict, model="gpt-4o-mini") -> str:
         max_tokens=300,
     )
 
-    '''
-    resp = openai.ChatCompletion.create(
-        model=model,
-        messages=messages,
-        temperature=0.3,
-        max_tokens=300,
-    )
-    '''
     return response.choices[0].message.content.strip()
 
 '''

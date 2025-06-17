@@ -9,7 +9,7 @@ import streamlit as st
 from scipy.ndimage import distance_transform_edt, binary_erosion, generate_binary_structure
 
 
-from HelperFunctions import compute_segmentation_metrics
+from HelperFunctions import compute_segmentation_metrics, analyze_metrics_with_gpt
 
 import warnings
 warnings.filterwarnings('ignore')
@@ -148,3 +148,10 @@ metrics = compute_segmentation_metrics(pred_vols[selected_case], gt_vols[selecte
 st.subheader("Segmentation Metrics Summary (Whole Volume)")
 #print(metrics)
 st.table(metrics)
+
+openai_key = st.secrets["openai"]["api_key"]
+analysis = analyze_metrics_with_gpt(openai_key, metrics, "gpt-4o-mini")
+st.subheader("Metrics analysis:")
+st.text_area(analysis)
+
+
