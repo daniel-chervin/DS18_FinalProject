@@ -4,4 +4,4 @@ SimpleITK
 matplotlib
 gitpython
 scipy
-openai
+openai==1.88.0
