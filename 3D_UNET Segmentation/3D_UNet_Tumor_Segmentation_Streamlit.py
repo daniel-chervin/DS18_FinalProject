@@ -149,9 +149,10 @@ st.subheader("Segmentation Metrics Summary (Whole Volume)")
 #print(metrics)
 st.table(metrics)
 
+'''
 openai_key = st.secrets["openai"]["api_key"]
 analysis = analyze_metrics_with_gpt(openai_key, metrics, "gpt-4o-mini")
 st.subheader("Metrics analysis:")
 st.text_area(analysis)
-
+'''
 
