@@ -174,18 +174,18 @@ def run_gpt_analysis(metrics, model="gpt-4o-mini"):
     # your existing helper
     return analyze_metrics_with_gpt(metrics, model)
 
-if st.button("Run metrics analysis with GPT:"):
-    with st.spinner("Calling GPT..."):
-        #analyse GPT only first Case or Case change
-        st.write(f'st.session_state.analysis_md is {st.session_state.get("analysis_md")}')
-        if st.session_state.get("analysis_md") is None:
-            st.write('st.session_state.get("analysis_md") is None, calling GPT!')
-            st.session_state.analysis_md = random.randint(1, 1000)  # analyze_metrics_with_gpt(metrics)
-        else:
-            st.write("Reuse analysis_md.")
+#if st.button("Run metrics analysis with GPT:"):
+with st.spinner("Calling GPT..."):
+    #analyse GPT only first Case or Case change
+    st.write(f'st.session_state.analysis_md is {st.session_state.get("analysis_md")}')
+    if st.session_state.get("analysis_md") is None:
+        st.write('st.session_state.get("analysis_md") is None, calling GPT!')
+        st.session_state.analysis_md = random.randint(1, 1000)  # analyze_metrics_with_gpt(metrics)
+    else:
+        st.write("Reuse analysis_md.")
 
-    if st.session_state.analysis_md:
-        st.markdown(st.session_state.analysis_md, unsafe_allow_html=True)
+if st.session_state.analysis_md:
+    st.markdown(st.session_state.analysis_md, unsafe_allow_html=True)
 
 
 
