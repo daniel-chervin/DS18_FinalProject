@@ -263,6 +263,8 @@ if __name__ == "__main__":
         "HD95": 1.7321,
         "ASSD": 0.5029
     }
-    analysis = analyze_metrics_with_gpt(metrics)
-    print("ChatGPT Analysis:\n", analysis)
+    print(openai.__version__)
+    #analysis = analyze_metrics_with_gpt(openai_key, metrics)
+    #print("ChatGPT Analysis:\n", analysis)
 '''
+
