@@ -3,7 +3,7 @@ import SimpleITK as sitk
 from glob import glob
 import numpy as np
 from scipy.ndimage import distance_transform_edt, binary_erosion, generate_binary_structure
-import streamlit
+import streamlit as st
 
 import warnings
 warnings.filterwarnings('ignore')
