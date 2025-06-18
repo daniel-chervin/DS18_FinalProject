@@ -241,8 +241,7 @@ def analyze_metrics_with_gpt(metrics: dict, model="gpt-4o-mini") -> str:
             )
         }
     ]
-    key = st.secrets["openai"]["api_key"]
-    client = openai.OpenAI(api_key=key)
+    client = openai.OpenAI(api_key=st.secrets["openai"]["api_key"])
     response = client.chat.completions.create(
         model=model,
         messages=messages,

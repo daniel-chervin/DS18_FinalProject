@@ -153,7 +153,8 @@ import openai
 #test_key = st.secrets["openai"]["test_key"]
 #openai_key =
 analysis = analyze_metrics_with_gpt(metrics, "gpt-4o-mini")
-st.subheader(f"Metrics analysis: {openai.__version__} {test_key}")
+st.subheader(f"Metrics analysis:")
+st.text(f"{analysis}")
 
 
 
