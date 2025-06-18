@@ -246,7 +246,7 @@ def analyze_metrics_with_gpt(metrics: dict, model="gpt-4o-mini") -> str:
         model=model,
         messages=messages,
         temperature=0.3,
-        max_tokens=300,
+        max_tokens=500,
     )
 
     return response.choices[0].message.content.strip()
