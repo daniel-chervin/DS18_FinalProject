@@ -89,13 +89,12 @@ plane = st.sidebar.selectbox('Plane', ['axial', 'sagittal', 'coronal'])
 if "selected_case" not in st.session_state:
     st.session_state.selected_case = selected_case #BRATS_460... etc...
 
-#detect Case change
+#detect Case change and only then reset analysis_md, no need to call GPT more than once with the same analysis data
 if st.session_state.get("selected_case") != selected_case:
     #reset analysis report
-    st.write(f"Case changed from {st.session_state.get("selected_case")} => {selected_case}")
+    #st.write(f"Case changed from {st.session_state.get("selected_case")} => {selected_case}")
     st.session_state.analysis_md = None
     st.session_state.selected_case = selected_case  # BRATS_460... etc...
-
 
 # Determine slice range
 shape = mri_vols[selected_case].shape
@@ -170,19 +169,19 @@ st.subheader("Segmentation Metrics Summary (Whole Volume)")
 st.table(metrics)
 
 #import threading, time
-def run_gpt_analysis(metrics, model="gpt-4o-mini"):
+#def run_gpt_analysis(metrics, model="gpt-4o-mini"):
     # your existing helper
-    return analyze_metrics_with_gpt(metrics, model)
+#    return analyze_metrics_with_gpt(metrics, model)
 
 #if st.button("Run metrics analysis with GPT:"):
 with st.spinner("Calling GPT..."):
     #analyse GPT only first Case or Case change
-    st.write(f'st.session_state.analysis_md is {st.session_state.get("analysis_md")}')
+    #st.write(f'st.session_state.analysis_md is {st.session_state.get("analysis_md")}')
     if st.session_state.get("analysis_md") is None:
-        st.write('st.session_state.get("analysis_md") is None, calling GPT!')
-        st.session_state.analysis_md = random.randint(1, 1000)  # analyze_metrics_with_gpt(metrics)
-    else:
-        st.write("Reuse analysis_md.")
+        #st.write('st.session_state.get("analysis_md") is None, calling GPT!')
+        st.session_state.analysis_md = analyze_metrics_with_gpt(metrics) # random.randint(1, 1000)
+    #else:
+    #    st.write("Reuse analysis_md.")
 
 if st.session_state.analysis_md:
     st.markdown(st.session_state.analysis_md, unsafe_allow_html=True)
