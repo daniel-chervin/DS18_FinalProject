@@ -6,6 +6,7 @@ import numpy as np
 import SimpleITK as sitk
 import matplotlib.pyplot as plt
 import streamlit as st
+import random
 from scipy.ndimage import distance_transform_edt, binary_erosion, generate_binary_structure
 
 
@@ -84,13 +85,14 @@ st.sidebar.header('Controls')
 selected_case = st.sidebar.selectbox('Case', cases)
 plane = st.sidebar.selectbox('Plane', ['axial', 'sagittal', 'coronal'])
 
-#first update
-if not st.session_state.selected_case:
+#first update (keyt not exist yet
+if "selected_case" not in st.session_state:
     st.session_state.selected_case = selected_case #BRATS_460... etc...
 
 #detect Case change
-if st.session_state.selected_case != selected_case:
+if st.session_state.get("selected_case") is not selected_case:
     #reset analysis report
+    st.write(f"Case changed from {st.session_state.get("selected_case")} => {selected_case}")
     st.session_state.analysis_md = None
     st.session_state.selected_case = selected_case  # BRATS_460... etc...
 
@@ -176,7 +178,10 @@ if st.button("Run metrics analysis with GPT:"):
     with st.spinner("Calling GPT..."):
         #analyse GPT only first Case or Case change
         if st.session_state.get("analysis_md") is None:
-            st.session_state.analysis_md = analyze_metrics_with_gpt(metrics)
+            st.write('st.session_state.get("analysis_md") is None, calling GPT!')
+            st.session_state.analysis_md = random.randint(1, 100)  # analyze_metrics_with_gpt(metrics)
+        else:
+            st.write("Reuse analysis_md.")
 
     if st.session_state.analysis_md:
         st.markdown(st.session_state.analysis_md, unsafe_allow_html=True)
