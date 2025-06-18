@@ -5,3 +5,5 @@ matplotlib
 gitpython
 scipy
 openai==1.88.0
+threading
+time

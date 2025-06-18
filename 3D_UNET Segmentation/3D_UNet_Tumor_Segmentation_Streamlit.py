@@ -149,11 +149,27 @@ st.subheader("Segmentation Metrics Summary (Whole Volume)")
 #print(metrics)
 st.table(metrics)
 
-import openai
-#test_key = st.secrets["openai"]["test_key"]
-#openai_key =
-analysis = analyze_metrics_with_gpt(metrics, "gpt-4o-mini")
-st.markdown(f"{analysis}")
+
+import threading, time
+
+def run_gpt_analysis(metrics, model="gpt-4o-mini"):
+    # your existing helper
+    return analyze_metrics_with_gpt(metrics, model)
+
+if st.button("Run metrics analysis with GPT:"):
+    result = {"md": None}
+
+    thread = threading.Thread(target = lambda: result.update(md=run_gpt_analysis(metrics)))
+
+    count = 99
+    while thread.is_alive():
+        with st.spinner(f"{count} bottles of beer…"):
+            time.sleep(1)
+        count = count - 1 if count > 0 else 99
+
+    st.success("Analysis complete!")
+    st.markdown(result["md"], unsafe_allow_html=True)
+
 
 
 
