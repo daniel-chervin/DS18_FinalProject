@@ -154,7 +154,7 @@ import openai
 #openai_key =
 analysis = analyze_metrics_with_gpt(metrics, "gpt-4o-mini")
 st.subheader(f"Metrics analysis:")
-st.text(f"{analysis}")
+st.markdown(f"{analysis}")
 
 
 
