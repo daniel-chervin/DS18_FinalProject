@@ -90,7 +90,7 @@ if "selected_case" not in st.session_state:
     st.session_state.selected_case = selected_case #BRATS_460... etc...
 
 #detect Case change
-if st.session_state.get("selected_case") is not selected_case:
+if st.session_state.get("selected_case") != selected_case:
     #reset analysis report
     st.write(f"Case changed from {st.session_state.get("selected_case")} => {selected_case}")
     st.session_state.analysis_md = None
