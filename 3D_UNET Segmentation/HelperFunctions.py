@@ -3,6 +3,7 @@ import SimpleITK as sitk
 from glob import glob
 import numpy as np
 from scipy.ndimage import distance_transform_edt, binary_erosion, generate_binary_structure
+import streamlit
 
 import warnings
 warnings.filterwarnings('ignore')
@@ -215,7 +216,7 @@ import openai
 #openai.api_key =
 #
 
-def analyze_metrics_with_gpt(key: str, metrics: dict, model="gpt-4o-mini") -> str:
+def analyze_metrics_with_gpt(metrics: dict, model="gpt-4o-mini") -> str:
     """
     Send the metrics dict to ChatGPT and return its analysis.
     """
@@ -240,6 +241,7 @@ def analyze_metrics_with_gpt(key: str, metrics: dict, model="gpt-4o-mini") -> st
             )
         }
     ]
+    key = st.secrets["openai"]["api_key"]
     client = openai.OpenAI(api_key=key)
     response = client.chat.completions.create(
         model=model,
