@@ -227,7 +227,7 @@ def analyze_metrics_with_gpt(metrics: dict, model="gpt-4o-mini") -> str:
             "content": (
                 "You are a radiology/ML expert. "
                 "When given segmentation metrics, you provide a concise, "
-                "clear evaluation of strengths, weaknesses, and suggested next steps."
+                "clear evaluation of strengths, weaknesses."
 
             )
         },
@@ -236,7 +236,7 @@ def analyze_metrics_with_gpt(metrics: dict, model="gpt-4o-mini") -> str:
             "content": (
                 "Here are my segmentation results:\n\n"
                 f"{metrics}\n\n"
-                "Please interpret these numbers and suggest improvements."
+                "Please interpret these numbers."
                 "organize the response in a presentable manner."
             )
         }
