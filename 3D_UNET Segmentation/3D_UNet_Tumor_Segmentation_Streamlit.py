@@ -55,6 +55,13 @@ GT_DIR    = data_path # '/content/data/T1_labels_resampled/'  # update if needed
 cases = [f.replace('_T1.nii.gz', '') for f in os.listdir(INPUT_DIR) if f.endswith('_T1.nii.gz')]
 cases = sorted(cases)
 
+#initialize first time states
+if "analysis_md" not in st.session_state:
+    st.session_state.analysis_md = None
+
+if "selected_case" not in st.session_state:
+    st.session_state.selected_case = None
+
 st.title('Interactive Brain Tumor Segmentation Viewer')
 
 # Cache loading of all volumes into memory
@@ -76,6 +83,17 @@ cases, mri_vols, pred_vols, gt_vols = load_all_volumes(INPUT_DIR, PRED_DIR, GT_D
 st.sidebar.header('Controls')
 selected_case = st.sidebar.selectbox('Case', cases)
 plane = st.sidebar.selectbox('Plane', ['axial', 'sagittal', 'coronal'])
+
+#first update
+if not st.session_state.selected_case:
+    st.session_state.selected_case = selected_case #BRATS_460... etc...
+
+#detect Case change
+if st.session_state.selected_case != selected_case:
+    #reset analysis report
+    st.session_state.analysis_md = None
+    st.session_state.selected_case = selected_case  # BRATS_460... etc...
+
 
 # Determine slice range
 shape = mri_vols[selected_case].shape
@@ -149,25 +167,21 @@ st.subheader("Segmentation Metrics Summary (Whole Volume)")
 #print(metrics)
 st.table(metrics)
 
-
 #import threading, time
-
 def run_gpt_analysis(metrics, model="gpt-4o-mini"):
     # your existing helper
     return analyze_metrics_with_gpt(metrics, model)
 
-if "analysis_md" not in st.session_state:
-    st.session_state.analysis_md = None
-
 if st.button("Run metrics analysis with GPT:"):
     with st.spinner("Calling GPT..."):
-        st.session_state.analysis_md = analyze_metrics_with_gpt(metrics)
+        #analyse GPT only first Case or Case change
+        if not st.session_state.analysis_md:
+            st.session_state.analysis_md = analyze_metrics_with_gpt(metrics)
 
     if st.session_state.analysis_md:
         st.markdown(st.session_state.analysis_md, unsafe_allow_html=True)
 
-    #st.success("Analysis complete!")
-    #st.markdown(result["md"], unsafe_allow_html=True)
+
 
 
 
