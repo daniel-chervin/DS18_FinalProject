@@ -150,25 +150,24 @@ st.subheader("Segmentation Metrics Summary (Whole Volume)")
 st.table(metrics)
 
 
-import threading, time
+#import threading, time
 
 def run_gpt_analysis(metrics, model="gpt-4o-mini"):
     # your existing helper
     return analyze_metrics_with_gpt(metrics, model)
 
+if "analysis_md" not in st.session_state:
+    st.session_state.analysis_md = None
+
 if st.button("Run metrics analysis with GPT:"):
-    result = {"md": None}
+    with st.spinner("Calling GPT..."):
+        st.session_state.analysis_md = analyze_metrics_with_gpt(metrics)
 
-    thread = threading.Thread(target = lambda: result.update(md=run_gpt_analysis(metrics)))
+    if st.session_state.analysis_md:
+        st.markdown(st.session_state.analysis_md, unsafe_allow_html=True)
 
-    count = 99
-    while thread.is_alive():
-        with st.spinner(f"{count} bottles of beer…"):
-            time.sleep(1)
-        count = count - 1 if count > 0 else 99
-
-    st.success("Analysis complete!")
-    st.markdown(result["md"], unsafe_allow_html=True)
+    #st.success("Analysis complete!")
+    #st.markdown(result["md"], unsafe_allow_html=True)
 
 
 
