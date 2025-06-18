@@ -175,7 +175,7 @@ def run_gpt_analysis(metrics, model="gpt-4o-mini"):
 if st.button("Run metrics analysis with GPT:"):
     with st.spinner("Calling GPT..."):
         #analyse GPT only first Case or Case change
-        if not st.session_state.analysis_md:
+        if st.session_state.get("analysis_md") is None:
             st.session_state.analysis_md = analyze_metrics_with_gpt(metrics)
 
     if st.session_state.analysis_md:
