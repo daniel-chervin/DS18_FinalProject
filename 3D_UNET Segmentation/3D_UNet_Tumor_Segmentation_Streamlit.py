@@ -13,7 +13,7 @@ import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 
 # Set Streamlit to use full-width layout with minimal margins
-st.set_page_config(layout="wide")
+#st.set_page_config(layout="wide")
 
 
 
