@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 import streamlit as st
 import random
 from scipy.ndimage import distance_transform_edt, binary_erosion, generate_binary_structure
-
+from matplotlib.colors import ListedColormap, BoundaryNorm
 
 from HelperFunctions import compute_segmentation_metrics, analyze_metrics_with_gpt
 
@@ -20,6 +20,7 @@ warnings.filterwarnings('ignore')
 
 # Suppress Streamlit deprecation warnings by raising the logger level
 #st.set_option('logger.level', 'error')
+
 
 
 #Clone to local data repo on streamlit cloud
@@ -121,11 +122,17 @@ gt_sl   = get_slice(gt_vols[selected_case], plane, slice_idx)
 # Plot 2x2 views
 fig, axes = plt.subplots(2,2, figsize=(10,10))
 
+# create a colormap with 4 entries: 0→transparent, 1→red, 2→green, 3→blue
+mask_cmap = ListedColormap(['none', 'red', 'green', 'blue'])
+# boundaries between labels: [0,1,2,3,4]
+mask_norm = BoundaryNorm([0, 1, 2, 3, 4], ncolors=mask_cmap.N, clip=True)
+
 # Helper to plot with equal aspect ratio
 def plot_img(ax, base_img, overlay=None, cmap='gray', overlay_cmap='jet'):
     im = ax.imshow(base_img, cmap=cmap, origin='lower', aspect='equal')
     if overlay is not None:
-        ax.imshow(overlay, cmap=overlay_cmap, alpha=0.5, origin='lower', aspect='equal')
+        #ax.imshow(overlay, cmap=overlay_cmap, alpha=0.5, origin='lower', aspect='equal')
+        ax.imshow(overlay, cmap=mask_cmap, norm=mask_norm,alpha=0.5, origin='lower', aspect='equal')
 
 
 # Top-left: MRI + Ground Truth
