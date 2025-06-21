@@ -125,10 +125,10 @@ fig.add_trace(go.Image(z=combined_pred_gt), row=2, col=2)
 # Enable pan & zoom and size
 fig.update_layout(
     dragmode='pan',
-    autosize=False,
+    autosize=True,
     #width=1000,
-    height=1000,
-    margin=dict(l=0, r=0, t=30, b=0),
+    #height=1000,
+    margin=dict(l=0, r=0, t=10, b=0),
     showlegend=False
 )
 
