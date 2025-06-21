@@ -73,82 +73,68 @@ else: max_idx = shape[1]
 slice_idx = st.sidebar.slider('Slice', 0, max_idx-1, max_idx//2)
 
 # Extract 2D slices
-
 def get_slice(vol, plane, idx):
-    if plane == 'axial':    return vol[idx, :, :]
-    if plane == 'sagittal': return vol[:, :, idx]
-    return vol[:, idx, :]
+    return {
+        'axial':    vol[idx, :, :],
+        'sagittal': vol[:, :, idx],
+        'coronal':  vol[:, idx, :]
+    }[plane]
 
 img_sl  = get_slice(mri_vols[selected_case], plane, slice_idx)
 pred_sl = get_slice(pred_vols[selected_case], plane, slice_idx)
 gt_sl   = get_slice(gt_vols[selected_case], plane, slice_idx)
 
-# Prepare interactive Plotly viewer
 # Normalize grayscale for RGB base
 img_norm = ((img_sl - img_sl.min()) / np.ptp(img_sl) * 255).astype(np.uint8)
 base_rgb = np.stack([img_norm]*3, axis=-1)
 
-# RGBA overlay for Ground Truth: red(1), green(2), blue(3)
-overlay_gt_rgba = np.stack([
-    np.where(gt_sl == 1, 255, 0),  # Red channel
-    np.where(gt_sl == 2, 255, 0),  # Green channel
-    np.where(gt_sl == 3, 255, 0),  # Blue channel
-    np.where(gt_sl > 0, int(0.5*255), 0)  # Alpha channel
-], axis=-1).astype(np.uint8)
+# Create per-label RGB overlays
+overlay_gt_rgb       = np.zeros_like(base_rgb)
+overlay_gt_rgb[gt_sl == 1] = [255,   0,   0]
+overlay_gt_rgb[gt_sl == 2] = [  0, 255,   0]
+overlay_gt_rgb[gt_sl == 3] = [  0,   0, 255]
 
-# RGBA overlay for Prediction: red(1), green(2), blue(3)
-overlay_pred_rgba = np.stack([
-    np.where(pred_sl == 1, 255, 0),
-    np.where(pred_sl == 2, 255, 0),
-    np.where(pred_sl == 3, 255, 0),
-    np.where(pred_sl > 0, int(0.5*255), 0)
-], axis=-1).astype(np.uint8)
+overlay_pred_rgb     = np.zeros_like(base_rgb)
+overlay_pred_rgb[pred_sl == 1] = [255,   0,   0]
+overlay_pred_rgb[pred_sl == 2] = [  0, 255,   0]
+overlay_pred_rgb[pred_sl == 3] = [  0,   0, 255]
 
-# Combined Pred vs GT overlay: Pred in red, GT in blue
-overlay_pred_only_rgba = np.stack([
-    np.where(pred_sl > 0, 255, 0),
-    np.zeros_like(pred_sl),
-    np.zeros_like(pred_sl),
-    np.where(pred_sl > 0, int(0.5*255), 0)
-], axis=-1).astype(np.uint8)
-overlay_gt_only_rgba = np.stack([
-    np.zeros_like(gt_sl),
-    np.zeros_like(gt_sl),
-    np.where(gt_sl > 0, 255, 0),
-    np.where(gt_sl > 0, int(0.5*255), 0)
-], axis=-1).astype(np.uint8)
+# Alpha masks
+gt_alpha   = (gt_sl > 0).astype(np.float32) * 0.5
+pred_alpha = (pred_sl > 0).astype(np.float32) * 0.5
+
+# Combine base + overlay with per-pixel alpha
+def blend(base, overlay, alpha):
+    return (base.astype(np.float32) * (1 - alpha[..., None]) + overlay.astype(np.float32) * alpha[..., None]).astype(np.uint8)
+
+combined_gt      = blend(base_rgb, overlay_gt_rgb,   gt_alpha)
+combined_pred    = blend(base_rgb, overlay_pred_rgb, pred_alpha)
+# Combined pred vs GT: overlay pred first, then GT
+combined_pred_gt = blend(blend(base_rgb, overlay_pred_rgb, pred_alpha), overlay_gt_rgb, gt_alpha)
 
 # Build 2x2 Plotly figure
 fig = make_subplots(
     rows=2, cols=2,
     subplot_titles=('Ground Truth', 'Prediction', 'MRI', 'Pred (red) vs GT (blue)')
 )
-# Layer base RGB then overlay RGBA in each subplot
-def add_layer(row, col, overlay_rgba=None):
-    fig.add_trace(go.Image(z=base_rgb), row=row, col=col)
-    if overlay_rgba is not None:
-        fig.add_trace(go.Image(z=overlay_rgba), row=row, col=col)
-
-add_layer(1, 1, overlay_gt_rgba)
-add_layer(1, 2, overlay_pred_rgba)
-add_layer(2, 1, None)
-add_layer(2, 2, None)
-# On bottom-right, add combined overlays
-fig.add_trace(go.Image(z=base_rgb), row=2, col=2)
-fig.add_trace(go.Image(z=overlay_pred_only_rgba), row=2, col=2)
-fig.add_trace(go.Image(z=overlay_gt_only_rgba),   row=2, col=2)
+fig.add_trace(go.Image(z=combined_gt),      row=1, col=1)
+fig.add_trace(go.Image(z=combined_pred),    row=1, col=2)
+fig.add_trace(go.Image(z=base_rgb),         row=2, col=1)
+fig.add_trace(go.Image(z=combined_pred_gt), row=2, col=2)
 
 # Enable pan & zoom and size
 fig.update_layout(
     dragmode='pan',
     autosize=False,
-    width=1400, height=900,
+    width=1400,
+    height=900,
     margin=dict(l=0, r=0, t=30, b=0),
     showlegend=False
 )
 
 # Render interactive chart
 st.plotly_chart(fig, use_container_width=True, height=900)
+
 
 # Compute and display metrics
 metrics = compute_segmentation_metrics(pred_vols[selected_case], gt_vols[selected_case])
