@@ -129,8 +129,8 @@ fig.add_trace(go.Image(z=combined_pred_gt), row=2, col=2)
 fig.update_layout(
     dragmode='pan',
     autosize=False,
-    width=2000,
-    height=1200,
+    width=1600,
+    height=1100,
     margin=dict(l=0, r=0, t=10, b=0),
     showlegend=False
 )
