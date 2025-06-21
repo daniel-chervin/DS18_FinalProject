@@ -144,8 +144,8 @@ fig.add_trace(go.Image(z=base_rgb),                row=2, col=2)
 fig.add_trace(go.Image(z=overlay_pred_only_rgba), row=2, col=2)
 fig.add_trace(go.Image(z=overlay_gt_only_rgba),   row=2, col=2)
 
-# Enable pan & zoom\ nfig.update_layout(
-dragmode='pan', margin=dict(l=0, r=0, t=30, b=0), showlegend=False)
+# Enable pan & zoom\ n
+fig.update_layout(dragmode='pan', margin=dict(l=0, r=0, t=30, b=0), showlegend=False)
 
 # Render interactive chart
 st.plotly_chart(fig, use_container_width=True)
