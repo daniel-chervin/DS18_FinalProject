@@ -3,6 +3,7 @@ from git import Repo
 import numpy as np
 import SimpleITK as sitk
 import streamlit as st
+import random
 from scipy.ndimage import distance_transform_edt, binary_erosion, generate_binary_structure
 
 from HelperFunctions import compute_segmentation_metrics, analyze_metrics_with_gpt
@@ -13,6 +14,7 @@ warnings.filterwarnings('ignore')
 # Add Plotly for interactive pan & zoom
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
+
 
 # Configuration for cloning data repository
 REPO_URL    = "https://github.com/daniel-chervin/DS18_FinalProject.git"
@@ -82,76 +84,65 @@ pred_sl = get_slice(pred_vols[selected_case], plane, slice_idx)
 gt_sl   = get_slice(gt_vols[selected_case], plane, slice_idx)
 
 # Prepare interactive Plotly viewer
-# Normalize grayscale to uint8
+# Normalize grayscale for RGB base
 img_norm = ((img_sl - img_sl.min()) / np.ptp(img_sl) * 255).astype(np.uint8)
 base_rgb = np.stack([img_norm]*3, axis=-1)
 
-# Ground Truth overlay (multicolor)
-overlay_gt = np.zeros_like(base_rgb)
-overlay_gt[gt_sl==1] = [255, 0, 0]
-overlay_gt[gt_sl==2] = [0, 255, 0]
-overlay_gt[gt_sl==3] = [0, 0, 255]
-alpha_gt = (gt_sl > 0).astype(np.float32) * 0.5
-overlay_gt_rgba = np.dstack([
-    overlay_gt[...,0], overlay_gt[...,1], overlay_gt[...,2],
-    (alpha_gt * 255).astype(np.uint8)
-])
+# RGBA overlay for Ground Truth: red(1), green(2), blue(3)
+overlay_gt_rgba = np.stack([
+    np.where(gt_sl == 1, 255, 0),  # Red channel
+    np.where(gt_sl == 2, 255, 0),  # Green channel
+    np.where(gt_sl == 3, 255, 0),  # Blue channel
+    np.where(gt_sl > 0, int(0.5*255), 0)  # Alpha channel
+], axis=-1).astype(np.uint8)
 
-# Prediction overlay (multicolor)
-overlay_pred = np.zeros_like(base_rgb)
-overlay_pred[pred_sl==1] = [255, 0, 0]
-overlay_pred[pred_sl==2] = [0, 255, 0]
-overlay_pred[pred_sl==3] = [0, 0, 255]
-alpha_pred = (pred_sl > 0).astype(np.float32) * 0.5
-overlay_pred_rgba = np.dstack([
-    overlay_pred[...,0], overlay_pred[...,1], overlay_pred[...,2],
-    (alpha_pred * 255).astype(np.uint8)
-])
+# RGBA overlay for Prediction: red(1), green(2), blue(3)
+overlay_pred_rgba = np.stack([
+    np.where(pred_sl == 1, 255, 0),
+    np.where(pred_sl == 2, 255, 0),
+    np.where(pred_sl == 3, 255, 0),
+    np.where(pred_sl > 0, int(0.5*255), 0)
+], axis=-1).astype(np.uint8)
 
-# Combined overlay: Pred in red vs GT in blue
-overlay_pred_only = np.zeros_like(base_rgb)
-overlay_pred_only[pred_sl > 0] = [255, 0, 0]
-overlay_gt_only   = np.zeros_like(base_rgb)
-overlay_gt_only[gt_sl > 0]   = [0, 0, 255]
-alpha_comb_pred = (pred_sl > 0).astype(np.float32) * 0.5
-alpha_comb_gt   = (gt_sl   > 0).astype(np.float32) * 0.5
-overlay_pred_only_rgba = np.dstack([
-    overlay_pred_only[...,0], overlay_pred_only[...,1], overlay_pred_only[...,2],
-    (alpha_comb_pred * 255).astype(np.uint8)
-])
-overlay_gt_only_rgba = np.dstack([
-    overlay_gt_only[...,0], overlay_gt_only[...,1], overlay_gt_only[...,2],
-    (alpha_comb_gt   * 255).astype(np.uint8)
-])
+# Combined Pred vs GT overlay: Pred in red, GT in blue
+overlay_pred_only_rgba = np.stack([
+    np.where(pred_sl > 0, 255, 0),
+    np.zeros_like(pred_sl),
+    np.zeros_like(pred_sl),
+    np.where(pred_sl > 0, int(0.5*255), 0)
+], axis=-1).astype(np.uint8)
+overlay_gt_only_rgba = np.stack([
+    np.zeros_like(gt_sl),
+    np.zeros_like(gt_sl),
+    np.where(gt_sl > 0, 255, 0),
+    np.where(gt_sl > 0, int(0.5*255), 0)
+], axis=-1).astype(np.uint8)
 
-# Create 2x2 subplot figure
+# Build 2x2 Plotly figure
 fig = make_subplots(
     rows=2, cols=2,
-    subplot_titles=(
-        'Ground Truth', 'Prediction', 'MRI', 'Pred (red) vs GT (blue)'
-    )
+    subplot_titles=('Ground Truth', 'Prediction', 'MRI', 'Pred (red) vs GT (blue)')
 )
-# Top-left: GT overlay
-fig.add_trace(go.Image(z=base_rgb),           row=1, col=1)
-fig.add_trace(go.Image(z=overlay_gt_rgba),    row=1, col=1)
-# Top-right: Prediction overlay
-fig.add_trace(go.Image(z=base_rgb),           row=1, col=2)
-fig.add_trace(go.Image(z=overlay_pred_rgba),  row=1, col=2)
-# Bottom-left: MRI only
-fig.add_trace(go.Image(z=base_rgb),           row=2, col=1)
-# Bottom-right: Combined Pred vs GT
-fig.add_trace(go.Image(z=base_rgb),                row=2, col=2)
+# Layer base RGB then overlay RGBA in each subplot
+def add_layer(row, col, overlay_rgba=None):
+    fig.add_trace(go.Image(z=base_rgb), row=row, col=col)
+    if overlay_rgba is not None:
+        fig.add_trace(go.Image(z=overlay_rgba), row=row, col=col)
+
+add_layer(1, 1, overlay_gt_rgba)
+add_layer(1, 2, overlay_pred_rgba)
+add_layer(2, 1, None)
+add_layer(2, 2, None)
+# On bottom-right, add combined overlays
+fig.add_trace(go.Image(z=base_rgb), row=2, col=2)
 fig.add_trace(go.Image(z=overlay_pred_only_rgba), row=2, col=2)
 fig.add_trace(go.Image(z=overlay_gt_only_rgba),   row=2, col=2)
 
-# Enable pan & zoom
-#fig.update_layout(dragmode='pan', margin=dict(l=0, r=0, t=30, b=0), showlegend=False)
-# Enable pan & zoom and double plot size
+# Enable pan & zoom and size
 fig.update_layout(
     dragmode='pan',
     autosize=False,
-    width=1400,
-    height=900,
+    width=1400, height=900,
     margin=dict(l=0, r=0, t=30, b=0),
     showlegend=False
 )
