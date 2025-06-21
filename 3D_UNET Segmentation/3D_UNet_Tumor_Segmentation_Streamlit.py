@@ -49,7 +49,7 @@ st.write(f"🔍 Loaded data from `{data_path}`")
 
 # Directories
 INPUT_DIR = data_path # '/content/data/T1_tumor_eval_resampled/'
-PRED_DIR  = data_path # '/content/drive/MyDrive/00-DataScience_BIU/Final Project/3D_UNet_Segmentation/'
+PRED_DIR  = os.path.join(data_path, 'pred_seg')  # '/content/drive/MyDrive/00-DataScience_BIU/Final Project/3D_UNet_Segmentation/'
 GT_DIR    = data_path # '/content/data/T1_labels_resampled/'  # update if needed
 
 # Collect case basenames
