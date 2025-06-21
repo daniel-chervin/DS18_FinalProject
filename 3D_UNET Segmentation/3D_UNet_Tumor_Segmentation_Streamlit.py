@@ -83,7 +83,7 @@ gt_sl   = get_slice(gt_vols[selected_case], plane, slice_idx)
 
 # Prepare interactive Plotly viewer
 # Normalize grayscale to uint8
-img_norm = ((img_sl - img_sl.min()) / img_sl.ptp() * 255).astype(np.uint8)
+img_norm = ((img_sl - img_sl.min()) / np.ptp(img_sl) * 255).astype(np.uint8)
 base_rgb = np.stack([img_norm]*3, axis=-1)
 
 # Ground Truth overlay (multicolor)
