@@ -117,8 +117,8 @@ combined_pred_gt = blend(blend(base_rgb, overlay_pred_rgb, pred_alpha), overlay_
 fig = make_subplots(
     rows=2, cols=2,
     subplot_titles=('Ground Truth', 'Prediction', 'MRI', 'Pred (red) vs GT (blue)'),
-    horizontal_spacing=0.02,
-    vertical_spacing=0.02
+    horizontal_spacing=0.01,
+    vertical_spacing=0.1
 )
 fig.add_trace(go.Image(z=combined_gt),      row=1, col=1)
 fig.add_trace(go.Image(z=combined_pred),    row=1, col=2)
