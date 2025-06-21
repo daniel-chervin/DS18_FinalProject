@@ -5,15 +5,16 @@ import SimpleITK as sitk
 import streamlit as st
 import random
 from scipy.ndimage import distance_transform_edt, binary_erosion, generate_binary_structure
-
 from HelperFunctions import compute_segmentation_metrics, analyze_metrics_with_gpt
-
 import warnings
 warnings.filterwarnings('ignore')
-
 # Add Plotly for interactive pan & zoom
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
+
+# Set Streamlit to use full-width layout with minimal margins
+st.set_page_config(layout="wide")
+
 
 
 # Configuration for cloning data repository
