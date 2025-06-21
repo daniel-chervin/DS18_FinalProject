@@ -144,17 +144,19 @@ fig.add_trace(go.Image(z=base_rgb),                row=2, col=2)
 fig.add_trace(go.Image(z=overlay_pred_only_rgba), row=2, col=2)
 fig.add_trace(go.Image(z=overlay_gt_only_rgba),   row=2, col=2)
 
-# Enable pan & zoom\ n
+# Enable pan & zoom
 fig.update_layout(dragmode='pan', margin=dict(l=0, r=0, t=30, b=0), showlegend=False)
 
 # Render interactive chart
 st.plotly_chart(fig, use_container_width=True)
 
-# Compute and display metrics\ nmetrics = compute_segmentation_metrics(pred_vols[selected_case], gt_vols[selected_case])
+# Compute and display metrics
+metrics = compute_segmentation_metrics(pred_vols[selected_case], gt_vols[selected_case])
 st.subheader('Segmentation Metrics Summary (Whole Volume)')
 st.table(metrics)
 
-# GPT analysis\ nif st.session_state.get('analysis_md') is None:
+# GPT analysis
+if st.session_state.get('analysis_md') is None:
     st.session_state.analysis_md = random.randint(1, 1000)
 if st.session_state.analysis_md:
     st.markdown(st.session_state.analysis_md, unsafe_allow_html=True)
