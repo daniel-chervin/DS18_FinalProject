@@ -148,7 +148,7 @@ fig.add_trace(go.Image(z=overlay_gt_only_rgba),   row=2, col=2)
 fig.update_layout(dragmode='pan', margin=dict(l=0, r=0, t=30, b=0), showlegend=False)
 
 # Render interactive chart
-st.plotly_chart(fig, use_container_width=True)
+st.plotly_chart(fig, use_container_width=True, height=900)
 
 # Compute and display metrics
 metrics = compute_segmentation_metrics(pred_vols[selected_case], gt_vols[selected_case])
