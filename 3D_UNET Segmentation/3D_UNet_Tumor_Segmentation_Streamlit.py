@@ -127,14 +127,14 @@ fig.add_trace(go.Image(z=combined_pred_gt), row=2, col=2)
 fig.update_layout(
     dragmode='pan',
     autosize=False,
-    width=1200,
-    height=800,
+    width=2000,
+    height=1200,
     margin=dict(l=0, r=0, t=10, b=0),
     showlegend=False
 )
 
 # Render interactive chart
-st.plotly_chart(fig, use_container_width=True, height=800)
+st.plotly_chart(fig, use_container_width=True, height=1200)
 
 
 # Compute and display metrics
