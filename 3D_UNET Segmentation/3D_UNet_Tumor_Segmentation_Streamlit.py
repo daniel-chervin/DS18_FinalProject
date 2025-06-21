@@ -145,7 +145,16 @@ fig.add_trace(go.Image(z=overlay_pred_only_rgba), row=2, col=2)
 fig.add_trace(go.Image(z=overlay_gt_only_rgba),   row=2, col=2)
 
 # Enable pan & zoom
-fig.update_layout(dragmode='pan', margin=dict(l=0, r=0, t=30, b=0), showlegend=False)
+#fig.update_layout(dragmode='pan', margin=dict(l=0, r=0, t=30, b=0), showlegend=False)
+# Enable pan & zoom and double plot size
+fig.update_layout(
+    dragmode='pan',
+    autosize=False,
+    width=1400,
+    height=900,
+    margin=dict(l=0, r=0, t=30, b=0),
+    showlegend=False
+)
 
 # Render interactive chart
 st.plotly_chart(fig, use_container_width=True, height=900)
