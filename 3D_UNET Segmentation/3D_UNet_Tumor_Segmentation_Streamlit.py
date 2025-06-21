@@ -148,6 +148,6 @@ with col1:
 
 # GPT analysis
 if st.session_state.get('analysis_md') is None:
-    st.session_state.analysis_md =  random.randint(1, 1000) # analyze_metrics_with_gpt(metrics) #
+    st.session_state.analysis_md =   analyze_metrics_with_gpt(metrics) # random.randint(1, 1000) #
 if st.session_state.analysis_md:
     st.markdown(st.session_state.analysis_md, unsafe_allow_html=True)
