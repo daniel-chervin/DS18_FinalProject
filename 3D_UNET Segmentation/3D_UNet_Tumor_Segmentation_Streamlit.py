@@ -127,7 +127,7 @@ fig.update_layout(
     dragmode='pan',
     autosize=False,
     width=1200,
-    height=1200,
+    height=800,
     margin=dict(l=0, r=0, t=10, b=0),
     showlegend=False
 )
