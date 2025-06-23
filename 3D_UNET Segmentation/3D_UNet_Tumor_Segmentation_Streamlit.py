@@ -53,15 +53,25 @@ def load_all_volumes(input_dir, pred_dir, gt_dir):
     ])
     mri_dict, pred_dict, gt_dict = {}, {}, {}
     for case in cases:
-        mri_dict[case] = sitk.GetArrayFromImage(
-            sitk.ReadImage(os.path.join(input_dir, f"{case}_T1.nii.gz")))
-        pred_dict[case] = sitk.GetArrayFromImage(
-            sitk.ReadImage(os.path.join(pred_dir, f"{case}_predict_seg.nii.gz")))
-        gt_path = os.path.join(gt_dir, f"{case}.nii.gz")
-        if os.path.exists(gt_path):
-            gt_dict[case] = sitk.GetArrayFromImage(sitk.ReadImage(gt_path))
+        # MRI file: detect suffix
+        for suffix in ("_T1.nii.gz", "-T1.nii.gz"):
+            mri_path = os.path.join(input_dir, f"{case}{suffix}")
+            if os.path.exists(mri_path):
+                mri_dict[case] = sitk.GetArrayFromImage(sitk.ReadImage(mri_path))
+                break
         else:
-            gt_dict[case] = None
+            raise FileNotFoundError(f"No MRI volume found for case '{case}'")
+        # Prediction file: accept both '_predict_seg' and '-predict_seg'
+        pred_path = os.path.join(pred_dir, f"{case}_predict_seg.nii.gz")
+        if not os.path.exists(pred_path):
+            pred_path = os.path.join(pred_dir, f"{case}-predict_seg.nii.gz")
+        pred_dict[case] = sitk.GetArrayFromImage(sitk.ReadImage(pred_path))
+        # Ground truth
+        gt_path = os.path.join(gt_dir, f"{case}.nii.gz")
+        gt_dict[case] = (
+            sitk.GetArrayFromImage(sitk.ReadImage(gt_path))
+            if os.path.exists(gt_path) else None
+        )
     return cases, mri_dict, pred_dict, gt_dict
 
 cases, mri_vols, pred_vols, gt_vols = load_all_volumes(INPUT_DIR, PRED_DIR, GT_DIR)
