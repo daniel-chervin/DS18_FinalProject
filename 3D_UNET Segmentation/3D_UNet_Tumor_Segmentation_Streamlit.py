@@ -85,17 +85,15 @@ if st.session_state.get('selected_case') != selected_case:
     st.session_state.analysis_md = None
 
 # Slice index
-shape = mri_vols[selected_case].shape  
-max_idx = {'axial':shape[0], 'sagittal':shape[2], 'coronal':shape[1]}[plane]  
-# Manage slider state to prevent out-of-range values
+shape = mri_vols[selected_case].shape
+max_idx = {'axial': shape[0], 'sagittal': shape[2], 'coronal': shape[1]}[plane]
+# Default to middle slice
 default_idx = max_idx // 2
-if 'slice_idx' not in st.session_state:
-    st.session_state.slice_idx = default_idx
-elif st.session_state.slice_idx > max_idx - 1:
-    st.session_state.slice_idx = default_idx
-# Slider with persistent key
+# Unique slider key per case and plane to avoid out-of-range issues
+slider_key = f"slice_{selected_case}_{plane}"
 slice_idx = st.sidebar.slider(
-    'Slice', 0, max_idx-1, st.session_state.slice_idx, key='slice_idx'
+    'Slice', 0, max_idx - 1, default_idx,
+    key=slider_key
 )
 
 # Get 2D slice  
