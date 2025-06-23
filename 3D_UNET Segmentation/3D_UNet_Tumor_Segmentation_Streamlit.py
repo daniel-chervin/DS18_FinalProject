@@ -69,9 +69,7 @@ plane = st.sidebar.selectbox('Plane', ['axial','sagittal','coronal'])
 # Reset analysis when switching case
 if st.session_state.get('selected_case') != selected_case:
     st.session_state.selected_case = selected_case
-if st.session_state.selected_case != selected_case:
     st.session_state.analysis_md = None
-    st.session_state.selected_case = selected_case
 
 # Determine slice index
 shape = mri_vols[selected_case].shape
@@ -94,7 +92,7 @@ black_frame = np.zeros_like(base_rgb)
 
 # Blend function
 def blend(base, overlay, alpha):
-    return (base.astype(np.float32) * (1 - alpha[..., None]) + overlay.astype(np.float32) * alpha[..., None]).astype(np.uint8)
+    return (base.astype(float)*(1-alpha[...,None]) + overlay.astype(float)*alpha[...,None]).astype(np.uint8)
 
 # Build combined images
 # GT overlay or black
