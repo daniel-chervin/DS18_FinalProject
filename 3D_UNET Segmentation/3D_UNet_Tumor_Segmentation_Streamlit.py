@@ -45,7 +45,12 @@ GT_DIR = data_path
 def load_all_volumes(input_dir, pred_dir, gt_dir):
     """Load MRI, prediction. GT optional."""
     files = os.listdir(input_dir)
-    cases = sorted([f.replace('_T1.nii.gz','') for f in files if f.endswith('_T1.nii.gz')])
+    # Include files ending with '_T1.nii.gz' or '-T1.nii.gz'
+    cases = sorted([
+        f.replace('_T1.nii.gz', '').replace('-T1.nii.gz', '')
+        for f in files
+        if f.endswith('_T1.nii.gz') or f.endswith('-T1.nii.gz')
+    ])
     mri_dict, pred_dict, gt_dict = {}, {}, {}
     for case in cases:
         mri_dict[case] = sitk.GetArrayFromImage(

@@ -63,10 +63,11 @@ def resample_image(image, new_size):
     return resampler.Execute(image)
 
 #---------------------------------------------------------------------------------------
+# Function used to resample
 def call_resample():
     # Input directories
     input_dirs = {
-        'inference_set': r'D:\pyProjects\DS18\DS18_FinalProject1\3D_UNET Segmentation\inference_test'
+        'inference_set': r'G:\My Drive\00-DataScience_BIU\Final Project\3D_UNet_Segmentation\3D_UNet_Brain_Tumor_Segmentation_multiclass_complete\inference_healthy'
         # "Tumor_Labels": r'D:\DS18\data\BrainTumour\imagesTs\T1'
         # "Tumor_T1": r'D:\DS18\data\BrainTumour\imagesTr\T1'
         #"Tumor_T1Gd": r'D:\DS18\data\BrainTumour\imagesTr\T1Gd'
@@ -76,7 +77,7 @@ def call_resample():
 
     # Output directories
     output_dirs = {
-        'inference_set': r'D:\pyProjects\DS18\DS18_FinalProject1\3D_UNET Segmentation\inference_test1'
+        'inference_set': r'G:\My Drive\00-DataScience_BIU\Final Project\3D_UNet_Segmentation\3D_UNet_Brain_Tumor_Segmentation_multiclass_complete\inference_healthy'
         # "Tumor_Labels": r'D:\DS18\data\BrainTumour\imagesTs\T1_resampled'
         # "Tumor_T1": r'D:\DS18\data\BrainTumour\imagesTr\T1_resampled'
         #"Tumor_T1Gd": r'D:\DS18\data\BrainTumour\imagesTr\T1Gd_resampled'
