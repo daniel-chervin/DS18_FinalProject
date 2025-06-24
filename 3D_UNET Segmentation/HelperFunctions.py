@@ -4,6 +4,9 @@ from glob import glob
 import numpy as np
 from scipy.ndimage import distance_transform_edt, binary_erosion, generate_binary_structure
 import streamlit as st
+from pathlib import Path
+import openai
+
 
 import warnings
 warnings.filterwarnings('ignore')
@@ -205,18 +208,7 @@ def call_compute_segmentation_metrics():
 #call_compute_segmentation_metrics()
 
 
-import openai
-
-# 1) Install the OpenAI client if you haven’t already:
-#    pip install openai
-
-# 2) Set your API key in the environment:
-#    export OPENAI_API_KEY="sk-…"
-
-
-#openai.api_key =
-#
-
+#----------------------------------------------------------------------------------------------------------
 def analyze_metrics_with_gpt(metrics: dict, model="gpt-4o-mini") -> str:
     """
     Send the metrics dict to ChatGPT and return its analysis.
@@ -270,3 +262,60 @@ if __name__ == "__main__":
     #print("ChatGPT Analysis:\n", analysis)
 '''
 
+#-----------------------------------------------------------------------------------------------
+
+def reorient_nifti_directory(
+    ref_path,
+    target_dir,
+    output_dir=None,
+    overwrite=False,
+    recursive=False
+):
+    """
+    Reorient all NIfTI files in target_dir (non-recursive by default) to match the
+    orientation of the reference image.
+
+    ref_path: Path to the reference NIfTI file.
+    target_dir: Directory containing NIfTI files to reorient.
+    output_dir: Directory to save reoriented volumes (None+overwrite must be True to overwrite originals).
+    overwrite: If True and output_dir is None, overwrite original files.
+    recursive: If True, traverse subdirectories; if False, process only the given directory.
+    """
+    ref_img = sitk.ReadImage(str(ref_path))
+    orient_filter = sitk.DICOMOrientImageFilter()
+    desired_code = orient_filter.GetOrientationFromDirectionCosines(ref_img.GetDirection())
+    orient_filter.SetDesiredCoordinateOrientation(desired_code)
+
+    if output_dir:
+        output_dir = Path(output_dir)
+        output_dir.mkdir(parents=True, exist_ok=True)
+
+    # Choose globbing method based on recursive flag
+    glob_func = Path(target_dir).rglob if recursive else Path(target_dir).glob
+    for nii_path in glob_func("*.nii.gz"):
+        if Path(nii_path) == Path(ref_path):
+            continue  # skip the reference file
+
+        img = sitk.ReadImage(str(nii_path))
+        reoriented = orient_filter.Execute(img)
+
+        if output_dir:
+            rel_path = Path(nii_path).relative_to(target_dir)
+            out_path = output_dir / rel_path
+            out_path.parent.mkdir(parents=True, exist_ok=True)
+        elif overwrite:
+            out_path = Path(nii_path)
+        else:
+            raise ValueError("Specify output_dir or set overwrite=True to save results.")
+
+        sitk.WriteImage(reoriented, str(out_path))
+        print(f"Reoriented {nii_path} → {out_path}")
+
+
+# Example usage:
+# Reference NIfTI
+reference = r"D:\temp\tmp\BRATS_460_T1.nii.gz"
+# Directory containing other NIfTIs
+data_folder = r"D:\temp\tmp"
+# Save to a new folder "reoriented"
+reorient_nifti_directory(reference, data_folder, output_dir=r"D:\temp\tmp\reoriented")
