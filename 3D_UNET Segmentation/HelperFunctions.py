@@ -318,4 +318,4 @@ reference = r"D:\temp\tmp\BRATS_460_T1.nii.gz"
 # Directory containing other NIfTIs
 data_folder = r"D:\temp\tmp"
 # Save to a new folder "reoriented"
-reorient_nifti_directory(reference, data_folder, output_dir=r"D:\temp\tmp\reoriented")
+#reorient_nifti_directory(reference, data_folder, output_dir=r"D:\temp\tmp\reoriented")
